@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+    implementation ("androidx.navigation:navigation-compose:2.6.0-alpha09")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
