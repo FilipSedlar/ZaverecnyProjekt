@@ -30,9 +30,9 @@ fun CountryDetailScreen(country: Country) {
         // Informace o zemi
         Text(text = country.name.official, fontSize = 24.sp)
         Text(text = "Region: ${country.region}", fontSize = 18.sp)
-        Text(text = "Hlavní město: ${country.capital?.joinToString() ?: "Neznámé"}", fontSize = 18.sp)
-        Text(text = "Populace: ${country.population}", fontSize = 18.sp)
-        Text(text = "Rozloha: ${country.area} km²", fontSize = 18.sp)
-        Text(text = "Jazyky: ${country.languages?.values?.joinToString() ?: "Neznámé"}", fontSize = 18.sp)
+        Text(text = "Main City: ${country.capital?.joinToString() ?: "Neznámé"}", fontSize = 18.sp)
+        Text(text = "Population: ${country.population}", fontSize = 18.sp)
+        Text(text = "Area: ${country.area} km²", fontSize = 18.sp)
+        Text(text = "Languages: ${country.languages?.values?.joinToString() ?: "Neznámé"}", fontSize = 18.sp)
     }
 }
