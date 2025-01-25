@@ -1,12 +1,12 @@
 package com.example.zaverecnyprojekt.network
 
-import com.example.zaverecnyprojekt.model.City
+import com.example.zaverecnyprojekt.model.Coutnry
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CityApiService {
+interface CountryApiService {
     @GET("city")
     suspend fun getCities(
         @Query("name") name: String
-    ): List<City>
+    ): List<Coutnry>
 }
