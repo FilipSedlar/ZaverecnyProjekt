@@ -1,6 +1,6 @@
 package com.example.zaverecnyprojekt.model
 
-data class Coutnry(
+data class Country(
     val name: Name,
     val capital: List<String>?,
     val region: String,
