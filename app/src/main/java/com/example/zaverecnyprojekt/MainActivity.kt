@@ -3,7 +3,9 @@ package com.example.zaverecnyprojekt
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,17 +22,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             ZaverecnyProjektTheme {
                 val navController = rememberNavController()
-                val viewModel = CountryViewModel()
-                val countries by viewModel.countries.collectAsState()
-
-                AppNavigation(navController, countries)
+                AppNavigation(navController)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigation(navController: NavHostController, countries: List<Country>) {
+fun AppNavigation(navController: NavHostController) {
+    val viewModel = CountryViewModel()
+    val countries by viewModel.countries.collectAsState()
+
     NavHost(navController = navController, startDestination = "countryList") {
         composable("countryList") {
             CountryListScreen(countries) { selectedCountry ->
@@ -40,7 +42,7 @@ fun AppNavigation(navController: NavHostController, countries: List<Country>) {
         composable("countryDetail/{countryName}") { backStackEntry ->
             val countryName = backStackEntry.arguments?.getString("countryName")
             val country = countries.find { it.name.common == countryName }
-            country?.let { CountryDetailScreen(it) }
+            country?.let { CountryDetailScreen(it, navController) }
         }
     }
 }

@@ -1,16 +1,20 @@
 package com.example.zaverecnyprojekt.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.zaverecnyprojekt.model.Country
 
 @Composable
-fun CountryDetailScreen(country: Country) {
+fun CountryDetailScreen(country: Country, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -19,8 +23,8 @@ fun CountryDetailScreen(country: Country) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Vlajka země
-        androidx.compose.foundation.Image(
-            painter = coil.compose.rememberImagePainter(data = country.flags.png),
+        Image(
+            painter = rememberImagePainter(data = country.flags.png),
             contentDescription = "${country.name.common} flag",
             modifier = Modifier.size(150.dp)
         )
@@ -34,5 +38,12 @@ fun CountryDetailScreen(country: Country) {
         Text(text = "Population: ${country.population}", fontSize = 18.sp)
         Text(text = "Area: ${country.area} km²", fontSize = 18.sp)
         Text(text = "Languages: ${country.languages?.values?.joinToString() ?: "Neznámé"}", fontSize = 18.sp)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Tlačítko Zpět
+        Button(onClick = { navController.navigateUp() }) {
+            Text(text = "Back")
+        }
     }
 }
