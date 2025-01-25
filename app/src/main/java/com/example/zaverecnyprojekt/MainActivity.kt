@@ -31,12 +31,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    val viewModel = CountryViewModel()
+    val viewModel: CountryViewModel = androidx.lifecycle.viewmodel.compose.viewModel() // Používáme Jetpack Compose ViewModel
     val countries by viewModel.countries.collectAsState()
 
     NavHost(navController = navController, startDestination = "countryList") {
         composable("countryList") {
-            CountryListScreen(countries) { selectedCountry ->
+            CountryListScreen(viewModel) { selectedCountry ->
                 navController.navigate("countryDetail/${selectedCountry.name.common}")
             }
         }

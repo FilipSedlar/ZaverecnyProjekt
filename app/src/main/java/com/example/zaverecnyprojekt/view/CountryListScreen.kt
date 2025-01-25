@@ -11,23 +11,25 @@ import androidx.compose.ui.unit.dp
 import com.example.zaverecnyprojekt.model.Country
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
+import com.example.zaverecnyprojekt.viewmodel.CountryViewModel
 
 @Composable
 fun CountryListScreen(
-    countries: List<Country>,
+    viewModel: CountryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onCountryClick: (Country) -> Unit
 ) {
-    var searchQuery by remember { mutableStateOf("") }
+    val countries by viewModel.countries.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
-    val filteredCountries = countries.filter { country ->
-        country.name.common.contains(searchQuery, ignoreCase = true)
-    }
+    var selectedRegion by remember { mutableStateOf("All") } // Výchozí region
+    var searchQuery by remember { mutableStateOf("") } // Vyhledávací dotaz
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Vyhledávací pole
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -37,17 +39,40 @@ fun CountryListScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Dropdown menu pro filtrování podle regionu
+        DropdownMenu(
+            regions = listOf("All", "Africa", "Asia", "Europe", "Americas", "Oceania"),
+            selectedRegion = selectedRegion,
+            onRegionSelected = { selectedRegion = it }
+        )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(filteredCountries) { country ->
-                CountryItem(country, onClick = { onCountryClick(country) })
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Zobrazování seznamu nebo stav načítání
+        if (isLoading) {
+            Text(text = "Loading countries...", modifier = Modifier.padding(16.dp))
+        } else {
+            // Filtrování podle regionu a vyhledávacího dotazu
+            val filteredCountries = countries.filter { country ->
+                (selectedRegion == "All" || country.region == selectedRegion) &&
+                        country.name.common.contains(searchQuery, ignoreCase = true)
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filteredCountries) { country ->
+                    CountryItem(
+                        country = country,
+                        onClick = { onCountryClick(country) }
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun CountryItem(country: Country, onClick: () -> Unit) {
@@ -71,3 +96,41 @@ fun CountryItem(country: Country, onClick: () -> Unit) {
         Text(text = country.name.common)
     }
 }
+
+@Composable
+fun DropdownMenu(
+    regions: List<String>,
+    selectedRegion: String,
+    onRegionSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { expanded = !expanded }
+    ) {
+        Text(
+            text = "Region: $selectedRegion",
+            modifier = Modifier.padding(8.dp)
+        )
+        androidx.compose.material.DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            regions.forEach { region ->
+                androidx.compose.material.DropdownMenuItem(
+                    onClick = {
+                        onRegionSelected(region)
+                        expanded = false
+                    }
+                ) {
+                    Text(text = region)
+                }
+            }
+        }
+    }
+}
+
+
