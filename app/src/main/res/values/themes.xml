@@ -3,4 +3,11 @@
 
     <style name="Theme.ZaverecnyProjekt" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
+    <style name="Theme.ZaverecnyProjekt.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.ZaverecnyProjekt</item>
+    </style>
+
 </resources>
