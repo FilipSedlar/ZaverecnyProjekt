@@ -9,13 +9,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import com.example.zaverecnyprojekt.model.Country
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun CountryDetailScreen(country: Country, navController: NavHostController) {
@@ -27,7 +26,7 @@ fun CountryDetailScreen(country: Country, navController: NavHostController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Vlajka
+
         AsyncImage(
             model = country.flags.png,
             contentDescription = "Flag of ${country.name.common}",
@@ -36,14 +35,12 @@ fun CountryDetailScreen(country: Country, navController: NavHostController) {
                 .padding(bottom = 16.dp)
         )
 
-        // Název země
         Text(
             text = country.name.common,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Tabulka detailů
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.Start
@@ -69,7 +66,6 @@ fun CountryDetailScreen(country: Country, navController: NavHostController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         country.maps?.get("googleMaps")?.let { mapUrl ->
-            val context = LocalContext.current
             Button(
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl))
@@ -83,12 +79,13 @@ fun CountryDetailScreen(country: Country, navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tlačítko zpět
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Back")
         }
     }
 }
+
+//Formátování textu
 
 @Composable
 fun DetailRow(label: String, value: String) {
@@ -101,15 +98,15 @@ fun DetailRow(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.End,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
+            maxLines = Int.MAX_VALUE
         )
     }
 }

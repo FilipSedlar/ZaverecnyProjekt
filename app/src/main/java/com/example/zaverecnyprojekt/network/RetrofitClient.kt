@@ -12,12 +12,10 @@ object RetrofitClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    // OkHttpClient s logováním
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .build()
 
-    // Retrofit instance
     val apiService: CountryApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)

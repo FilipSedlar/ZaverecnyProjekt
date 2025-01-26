@@ -21,20 +21,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import com.example.zaverecnyprojekt.utils.PreferencesHelper
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun CountryListScreen(
     viewModel: CountryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onCountryClick: (Country) -> Unit
 ) {
+
+    val context = LocalContext.current
+    val preferencesHelper = remember { PreferencesHelper(context) }
+
     val countries by viewModel.countries.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    var selectedRegion by remember { mutableStateOf("All") } // Výchozí region
-    var searchQuery by remember { mutableStateOf("") } // Vyhledávací dotaz
+    var selectedRegion by remember { mutableStateOf(preferencesHelper.getSelectedRegion()) } // Předvyplněný region
+    var searchQuery by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -45,9 +50,7 @@ fun CountryListScreen(
         Text(
             text = "Explore Countries",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally) // Zarovnání do středu
-                .padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
         // Vyhledávací pole
@@ -58,15 +61,17 @@ fun CountryListScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            singleLine = true,
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+            singleLine = true
         )
 
-
+        // Dropdown menu pro výběr regionu
         DropdownMenu(
             regions = listOf("All", "Africa", "Asia", "Europe", "Americas", "Oceania"),
             selectedRegion = selectedRegion,
-            onRegionSelected = { selectedRegion = it }
+            onRegionSelected = {
+                selectedRegion = it
+                preferencesHelper.saveSelectedRegion(it)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -79,8 +84,7 @@ fun CountryListScreen(
             ) {
                 Text(
                     text = "Loading countries...",
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.secondary
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         } else {
@@ -114,7 +118,7 @@ fun CountryItem(
             .clickable { onClick() }
             .padding(horizontal = 8.dp, vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
@@ -136,8 +140,8 @@ fun CountryItem(
             Column {
                 Text(
                     text = country.name.common,
-                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "Region: ${country.region}",
@@ -149,19 +153,19 @@ fun CountryItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun DropdownMenu(
-    regions: List<String>, // Předaný seznam regionů
-    selectedRegion: String, // Vybraný region
-    onRegionSelected: (String) -> Unit // Callback pro výběr regionu
+    regions: List<String>,
+    selectedRegion: String,
+    onRegionSelected: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) } // Stav pro otevření/uzavření dropdownu
+    var expanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentSize(Alignment.TopStart) // Zarovnání dropdownu
+            .wrapContentSize(Alignment.TopStart)
     ) {
         // Dropdown Trigger Box
         Box(
@@ -176,17 +180,17 @@ fun DropdownMenu(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(12.dp)
                 )
-                .clickable { expanded = true } // Kliknutím se otevře menu
-                .padding(12.dp) // Vnitřní okraje pro lepší vzhled
+                .clickable { expanded = true }
+                .padding(12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = selectedRegion, // Zobrazení vybraného regionu
+                    text = selectedRegion,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f) // Vyplní šířku, aby byla šipka zarovnaná vpravo
+                    modifier = Modifier.weight(1f)
                 )
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -195,12 +199,12 @@ fun DropdownMenu(
             }
         }
 
-        // Dropdown Menu Items
+
         androidx.compose.material3.DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }, // Zavření menu při kliknutí mimo něj
+            onDismissRequest = { expanded = false },
             modifier = Modifier
-                .fillMaxWidth() // Zajištění, že menu má stejnou šířku jako trigger
+                .fillMaxWidth()
         ) {
             regions.forEach { region ->
                 androidx.compose.material3.DropdownMenuItem(
@@ -208,15 +212,15 @@ fun DropdownMenu(
                         Text(
                             text = region,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.fillMaxWidth() // Položka se rozprostře přes celou šířku
+                            modifier = Modifier.fillMaxWidth()
                         )
                     },
                     onClick = {
-                        onRegionSelected(region) // Callback při výběru
-                        expanded = false // Zavření menu
+                        onRegionSelected(region)
+                        expanded = false
                     },
                     modifier = Modifier
-                        .fillMaxWidth() // Zajištění, že kliknutelný prostor je roztažený
+                        .fillMaxWidth()
                         .background(
                             MaterialTheme.colorScheme.surface
                         )

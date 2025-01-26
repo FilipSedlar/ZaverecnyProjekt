@@ -11,11 +11,11 @@ import kotlinx.coroutines.launch
 
 class CountryViewModel : ViewModel() {
 
-    // Stav pro seznam zemí
+
     private val _countries = MutableStateFlow<List<Country>>(emptyList())
     val countries: StateFlow<List<Country>> = _countries
 
-    // Stav pro načítání
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -33,7 +33,7 @@ class CountryViewModel : ViewModel() {
             } catch (e: Exception) {
                 android.util.Log.e("API", "Error fetching countries: ${e.message}")
                 e.printStackTrace()
-                _countries.value = emptyList() // Pokud dojde k chybě, nastavíme prázdný seznam
+                _countries.value = emptyList()
             } finally {
                 _isLoading.value = false
             }
