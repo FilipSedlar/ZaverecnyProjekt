@@ -11,10 +11,8 @@ class SplashActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Nastavíme layout aktivity
         setContentView(R.layout.activity_splash)
 
-        // Použijeme lifecycleScope a prodlevu
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".SplashActivity">
 
-    <!-- Ikona -->
     <ImageView
         android:id="@+id/splash_icon"
         android:layout_width="100dp"
@@ -18,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Název "Countries" -->
     <TextView
         android:id="@+id/splash_title"
         android:layout_width="wrap_content"
