@@ -1,7 +1,6 @@
 package com.example.zaverecnyprojekt
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -12,7 +11,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.zaverecnyprojekt.model.Country
 import com.example.zaverecnyprojekt.ui.theme.ZaverecnyProjektTheme
 import com.example.zaverecnyprojekt.view.CountryDetailScreen
 import com.example.zaverecnyprojekt.view.CountryListScreen
